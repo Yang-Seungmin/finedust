@@ -50,6 +50,7 @@ unsigned long packets_sent;          // How many have we sent already
 struct payload_t {                  // Structure of our payload
 	uint16_t this_node;
 	char pm10[8];
+	char pm25[8];
 };
 
 int main(int argc, char** argv) 
@@ -72,7 +73,7 @@ int main(int argc, char** argv)
    			 payload_t payload;
   			 network.read(header,&payload,sizeof(payload));
 			
-			printf("Payload Node: %d  PM10: %s \n",payload.this_node, payload.pm10);
+			printf("Payload Node: %d  PM10: %s  PM2.5: %s\n",payload.this_node, payload.pm10, payload.pm25);
   }		  
 		 //sleep(2);
 		 delay(2000);
