@@ -49,8 +49,8 @@ unsigned long packets_sent;          // How many have we sent already
 
 struct payload_t {                  // Structure of our payload
     uint16_t this_node;
-    char pm10[6];
-    char pm25[6];
+    char pm10[8];
+    char pm25[8];
     union {
         char lat_char[4];
         long lat_long;

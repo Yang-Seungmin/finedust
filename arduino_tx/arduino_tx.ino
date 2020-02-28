@@ -6,7 +6,7 @@
 #include <SoftwareSerial.h>
 
 RF24 radio(7,8);                    // nRF24L01(+) radio attached using Getting Started board 
-SoftwareSerial gps(2, 3);
+SoftwareSerial gps(3, 2);
 
 RF24Network network(radio);          // Network uses that radio
 
@@ -18,8 +18,8 @@ const unsigned long interval = 2000; //ms  // How often to send 'hello world to 
 
 struct payload_t {                  // Structure of our payload
   uint16_t this_node;
-  char pm10[6];
-  char pm25[6];
+  char pm10[8];
+  char pm25[8];
   union {
     char lat_char[4];
     long lat_long;
