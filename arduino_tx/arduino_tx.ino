@@ -19,7 +19,10 @@ const uint16_t channel = 90;
 
 struct payload_t {                  // Structure of our payload
   uint16_t this_node;
-  float datas[4];
+  float pm10;
+  float pm25;
+  float lat;
+  float lng;
 };
 
 void setup() {
@@ -61,7 +64,6 @@ void loop() {
   bool newData = false;
   unsigned long age;
   char retry;
-  bool ok;
 
   payload_t payload = {this_node, -1.0, -1.0, -1000, -1000};
 
@@ -71,8 +73,8 @@ void loop() {
   
   PmResult pm = sds.queryPm();
   if (pm.isOk()) {
-    payload.datas[0] = pm.pm10;
-    payload.datas[1] = pm.pm25;
+    payload.pm10 = pm.pm10;
+    payload.pm25 = pm.pm25;
   } else {                    //Red LED will blink 5 times if Sensor cannot be activated.
     ledBlink(4, 6, 100);
   }
@@ -97,7 +99,7 @@ void loop() {
 
   if (newData) {
     unsigned long age;
-    tgps.f_get_position(&payload.datas[2], &payload.datas[3], &age);
+    tgps.f_get_position(&payload.lat, &payload.lng, &age);
   } else {
     ledBlink(5, 6, 100);
   }
@@ -109,17 +111,16 @@ void loop() {
     digitalWrite(5, HIGH);
     network.update();                          // Check the network regularly
     RF24NetworkHeader header(other_node);
-    ok = network.write(header,&payload,sizeof(payload));
+    bool ok = network.write(header,&payload,sizeof(payload));
 
     digitalWrite(5, LOW);
     
     if (ok)                   //Red LED will off if data is completely transferred.
       break;
     else                      //Red LED will blink 3 times if data is not transferred.
-      delay(100);
+      delay(1000);
   }
-
-  if(!ok) ledBlink(4, 3, 500);
   
+
   delay(5000);
 }
