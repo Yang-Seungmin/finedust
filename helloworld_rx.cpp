@@ -53,7 +53,7 @@ struct payload_t {                  // Structure of our payload
     char pm25[6];
     union {
         char lat_char[4];
-        long lat_long
+        long lat_long;
     } lat;
     union {
         char lng_char[4];
