@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <time.h>
 
+using namespace std;
 
 /**
  * g++ -L/usr/lib main.cc -I/usr/include -o main -lrrd
