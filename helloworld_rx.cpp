@@ -49,11 +49,9 @@ unsigned long packets_sent;          // How many have we sent already
 
 struct payload_t {                  // Structure of our payload
     uint16_t this_node;
-    float pm10;
-    float pm25;
-    float lat;
-    float lng;
+    float datas[4];
 };
+
 
 int main(int argc, char** argv) 
 {
@@ -66,15 +64,21 @@ int main(int argc, char** argv)
 	radio.printDetails();
 	
 	while(1) {
+        time_t curr_time;
+        struct tm* curr_tm;
         network.update();
   		while ( network.available() ) {     // Is there anything ready for us?
     			
 		    RF24NetworkHeader header;        // If so, grab it and print it out
    			payload_t payload;
   			network.read(header,&payload,sizeof(payload));
-			
+
+            curr_time = time(NULL);
+            curr_tm = localtime(&curr_time);
+
+            printf("[%d:%d:%d] ", curr_tm->tm_hour, curr_tm->tm_min, curr_tm->tm_sec);
 			printf("Payload Node: %d  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
-                payload.this_node, payload.pm10, payload.pm25, payload.lat, payload.lng);
+                payload.this_node, payload.datas[0], payload.datas[1], payload.datas[2], payload.datas[3]);
         }		  
 		//sleep(2);
 		delay(2000);
