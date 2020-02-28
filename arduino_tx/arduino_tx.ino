@@ -2,7 +2,6 @@
 #include <SdsDustSensor.h>
 #include <RF24Network.h>
 #include <RF24.h>
-#include <SPI.h>
 #include <SoftwareSerial.h>
 
 RF24 radio(7,8);                    // nRF24L01(+) radio attached using Getting Started board 
@@ -13,7 +12,7 @@ SoftwareSerial gps(3, 2);
 
 TinyGPS tgps;
 
-const uint16_t this_node = 01;        // Address of our node in Octal format
+const uint16_t this_node = 02;        // Address of our node in Octal format
 const uint16_t other_node = 00;       // Address of the other node in Octal format
 const uint16_t channel = 90;
 
@@ -36,7 +35,6 @@ void setup() {
   digitalWrite(4, HIGH);
   digitalWrite(5, HIGH);
  
-  SPI.begin();
   radio.begin();
   network.begin(/*channel*/ channel, /*node address*/ this_node);
 
@@ -80,8 +78,11 @@ void loop() {
     ledBlink(4, 6, 100);
   }
 
-  sds.sleep();
-  digitalWrite(4, LOW);
+  WorkingStateResult state = sds.sleep();
+  if (!state.isWorking()) {
+    digitalWrite(4, LOW);
+  }
+  
   digitalWrite(5, HIGH);
 
   gps.listen();
@@ -100,7 +101,7 @@ void loop() {
 
   if (newData) {
     unsigned long age;
-    //tgps.f_get_position(&payload.lat, &payload.lng, &age);
+    tgps.f_get_position(&payload.lat, &payload.lng, &age);
   } else {
     ledBlink(5, 6, 100);
   }

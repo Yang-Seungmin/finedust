@@ -15,6 +15,7 @@
 #include <ctime>
 #include <stdio.h>
 #include <time.h>
+#include <fstream>
 
 using namespace std;
 
@@ -60,6 +61,9 @@ int main(int argc, char** argv)
 {
 	// Refer to RF24.h or nRF24L01 DS for settings
 
+    FILE* f;
+
+
 	radio.begin();
 	
 	delay(5);
@@ -80,8 +84,16 @@ int main(int argc, char** argv)
             curr_tm = localtime(&curr_time);
 
             printf("[%02d:%02d:%02d] ", curr_tm->tm_hour, curr_tm->tm_min, curr_tm->tm_sec);
-			printf("Payload Node: 0%o  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
+            printf("Payload Node: 0%o  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
                 payload.this_node, payload.pm10, payload.pm25, payload.lat, payload.lng);
+
+            f = fopen("log.txt", 'a');
+
+            fprintf(f, "[%02d:%02d:%02d] ", curr_tm->tm_hour, curr_tm->tm_min, curr_tm->tm_sec);
+            fprintf(f, "Payload Node: 0%o  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
+                payload.this_node, payload.pm10, payload.pm25, payload.lat, payload.lng);
+
+            fclose(f)
         }		  
 		//sleep(2);
 		delay(2000);
