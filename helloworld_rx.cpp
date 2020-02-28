@@ -87,7 +87,7 @@ int main(int argc, char** argv)
             printf("Payload Node: 0%o  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
                 payload.this_node, payload.pm10, payload.pm25, payload.lat, payload.lng);
 
-            f = fopen("log.txt", 'a');
+            f = fopen("log.txt", "a");
 
             fprintf(f, "[%02d:%02d:%02d] ", curr_tm->tm_hour, curr_tm->tm_min, curr_tm->tm_sec);
             fprintf(f, "Payload Node: 0%o  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
