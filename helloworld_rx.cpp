@@ -61,13 +61,17 @@ int main(int argc, char** argv)
 {
 	// Refer to RF24.h or nRF24L01 DS for settings
 
-    cout << sizeof(uint16_t) << endl;
-    cout << sizeof(int) << endl;
-    cout << sizeof(char) << endl;
-    cout << sizeof(float) << endl;
-    cout << sizeof(double) << endl;
+    payload_t pay;
 
-    cout << sizeof(payload_t) << endl;
+    cout << sizeof(pay) << endl;
+
+    cout << sizeof(pay.this_node) << endl;
+    cout << sizeof(pay.pm10) << endl;
+    cout << sizeof(pay.pm25) << endl;
+    cout << sizeof(pay.lat) << endl;
+    cout << sizeof(pay.lng) << endl;
+
+    
 
 	radio.begin();
 	
