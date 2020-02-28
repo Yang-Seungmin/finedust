@@ -21,8 +21,6 @@ struct payload_t {                  // Structure of our payload
   uint16_t this_node;
   float pm10;
   float pm25;
-  float lat;
-  float lng;
 };
 
 void setup() {
@@ -64,8 +62,9 @@ void loop() {
   bool newData = false;
   unsigned long age;
   char retry;
-
-  payload_t payload = {this_node, -1.0, -1.0, -1000, -1000};
+  bool ok;
+  
+  payload_t payload = {this_node, -1.0, -1.0};
 
   digitalWrite(4, HIGH);       
   sds.wakeup();
@@ -99,7 +98,7 @@ void loop() {
 
   if (newData) {
     unsigned long age;
-    tgps.f_get_position(&payload.lat, &payload.lng, &age);
+    //tgps.f_get_position(&payload.lat, &payload.lng, &age);
   } else {
     ledBlink(5, 6, 100);
   }
@@ -111,7 +110,7 @@ void loop() {
     digitalWrite(5, HIGH);
     network.update();                          // Check the network regularly
     RF24NetworkHeader header(other_node);
-    bool ok = network.write(header,&payload,sizeof(payload));
+    ok = network.write(header,&payload,sizeof(payload));
 
     digitalWrite(5, LOW);
     
@@ -120,7 +119,8 @@ void loop() {
     else                      //Red LED will blink 3 times if data is not transferred.
       delay(1000);
   }
-  
 
+  if(!ok) ledBlink(5, 3, 500);
+  
   delay(5000);
 }

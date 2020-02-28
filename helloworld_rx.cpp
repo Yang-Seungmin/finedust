@@ -60,6 +60,12 @@ int main(int argc, char** argv)
 {
 	// Refer to RF24.h or nRF24L01 DS for settings
 
+    cout << sizeof(uint16_t) << endl;
+    cout << sizeof(int) << endl;
+    cout << sizeof(char) << endl;
+    cout << sizeof(float) << endl;
+    cout << sizeof(double) << endl;
+
 	radio.begin();
 	
 	delay(5);
