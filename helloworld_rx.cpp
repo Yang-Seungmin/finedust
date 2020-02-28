@@ -67,6 +67,8 @@ int main(int argc, char** argv)
     cout << sizeof(float) << endl;
     cout << sizeof(double) << endl;
 
+    cout << sizeof(payload_t) << endl;
+
 	radio.begin();
 	
 	delay(5);
