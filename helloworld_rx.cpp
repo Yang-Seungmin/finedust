@@ -93,7 +93,7 @@ int main(int argc, char** argv)
             fprintf(f, "Payload Node: 0%o  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
                 payload.this_node, payload.pm10, payload.pm25, payload.lat, payload.lng);
 
-            fclose(f)
+            fclose(f);
         }		  
 		//sleep(2);
 		delay(2000);
