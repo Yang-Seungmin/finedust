@@ -49,29 +49,16 @@ unsigned long packets_sent;          // How many have we sent already
 
 
 struct payload_t {                  // Structure of our payload
-    uint16_t this_node;
     float pm10;
     float pm25;
     float lat;
     float lng;
+    uint16_t this_node;
 };
-
 
 int main(int argc, char** argv) 
 {
 	// Refer to RF24.h or nRF24L01 DS for settings
-
-    payload_t pay;
-
-    cout << sizeof(pay) << endl;
-
-    cout << sizeof(pay.this_node) << endl;
-    cout << sizeof(pay.pm10) << endl;
-    cout << sizeof(pay.pm25) << endl;
-    cout << sizeof(pay.lat) << endl;
-    cout << sizeof(pay.lng) << endl;
-
-    
 
 	radio.begin();
 	

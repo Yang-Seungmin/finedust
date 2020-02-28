@@ -18,9 +18,11 @@ const uint16_t other_node = 00;       // Address of the other node in Octal form
 const uint16_t channel = 90;
 
 struct payload_t {                  // Structure of our payload
-  uint16_t this_node;
   float pm10;
   float pm25;
+  float lat;
+  float lng;
+  uint16_t this_node;
 };
 
 void setup() {
@@ -64,7 +66,7 @@ void loop() {
   char retry;
   bool ok;
   
-  payload_t payload = {this_node, -1.0, -1.0};
+  payload_t payload = {-1.0, -1.0, -1000.0, -1000.0, this_node};
 
   digitalWrite(4, HIGH);       
   sds.wakeup();
