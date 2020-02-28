@@ -49,16 +49,10 @@ unsigned long packets_sent;          // How many have we sent already
 
 struct payload_t {                  // Structure of our payload
     uint16_t this_node;
-    char pm10[8];
-    char pm25[8];
-    union {
-        char lat_char[4];
-        long lat_long;
-    } lat;
-    union {
-        char lng_char[4];
-        long lng_long;
-    } lng;
+    float pm10;
+    float pm25;
+    float lat;
+    float lng;
 };
 
 int main(int argc, char** argv) 
@@ -71,22 +65,20 @@ int main(int argc, char** argv)
 	network.begin(/*channel*/ 90, /*node address*/ this_node);
 	radio.printDetails();
 	
-	while(1)
-	{
-
-		  network.update();
-  		  while ( network.available() ) {     // Is there anything ready for us?
+	while(1) {
+        network.update();
+  		while ( network.available() ) {     // Is there anything ready for us?
     			
-		 	RF24NetworkHeader header;        // If so, grab it and print it out
-   			 payload_t payload;
-  			 network.read(header,&payload,sizeof(payload));
+		    RF24NetworkHeader header;        // If so, grab it and print it out
+   			payload_t payload;
+  			network.read(header,&payload,sizeof(payload));
 			
-			printf("Payload Node: %d  PM10: %s  PM2.5: %s  lat: %s, lng: %s\n",
-                payload.this_node, payload.pm10, payload.pm25, payload.lat.lat_char, payload.lng.lng_char);
-  }		  
-		 //sleep(2);
-		 delay(2000);
-		 //fclose(pFile);
+			printf("Payload Node: %d  PM10: %.2f  PM2.5: %.2f  lat: %.6f, lng: %.6f\n",
+                payload.this_node, payload.pm10, payload.pm25, payload.lat, payload.lng);
+        }		  
+		//sleep(2);
+		delay(2000);
+		//fclose(pFile);
 	}
 
 	return 0;

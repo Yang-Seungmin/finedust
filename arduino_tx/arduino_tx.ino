@@ -6,36 +6,26 @@
 #include <SoftwareSerial.h>
 
 RF24 radio(7,8);                    // nRF24L01(+) radio attached using Getting Started board 
+RF24Network network(radio);          // Network uses that radio
+
+SdsDustSensor sds(Serial);
 SoftwareSerial gps(3, 2);
 
-RF24Network network(radio);          // Network uses that radio
+TinyGPS tgps;
 
 const uint16_t this_node = 01;        // Address of our node in Octal format
 const uint16_t other_node = 00;       // Address of the other node in Octal format
 const uint16_t channel = 90;
 
-const unsigned long interval = 2000; //ms  // How often to send 'hello world to the other unit
-
 struct payload_t {                  // Structure of our payload
   uint16_t this_node;
-  char pm10[8];
-  char pm25[8];
-  union {
-    char lat_char[4];
-    long lat_long;
-  } lat;
-  union {
-    char lng_char[4];
-    long lng_long;
-  } lng;
+  float pm10;
+  float pm25;
+  float lat;
+  float lng;
 };
 
-SdsDustSensor sds(Serial);
-
-TinyGPS tgps;
-
-void setup(void)
-{
+void setup() {
   //Serial.begin(9600);
   //Serial.println(freeRam());
   //Serial.println(F("RF24Network/examples/helloworld_tx/"));
@@ -50,10 +40,10 @@ void setup(void)
   radio.begin();
   network.begin(/*channel*/ channel, /*node address*/ this_node);
 
-  gps.begin(9600);
-
   sds.begin();
   sds.setQueryReportingMode();
+  
+  gps.begin(9600);
 
   delay(1000);
   digitalWrite(4, LOW);
@@ -70,13 +60,11 @@ void ledBlink(int pin, int count, int period) {
   }
 }
 
-
 void loop() {
-  bool newdata = false;
-  unsigned long start = millis();
+  bool newData = false;
   unsigned long age;
 
-  payload_t payload = { this_node, "-1.0", "-1.0", NULL, NULL };
+  payload_t payload = {this_node, -1.0, -1.0, -1000, -1000};
 
   digitalWrite(4, HIGH);       
   sds.wakeup();
@@ -84,51 +72,49 @@ void loop() {
   
   PmResult pm = sds.queryPm();
   if (pm.isOk()) {
-    network.update();                          // Check the network regularly
-    
-    //Serial.print(F("Sending..."));
-    
-    dtostrf(pm.pm10, 4, 2, payload.pm10);
-    dtostrf(pm.pm25, 4, 2, payload.pm25);
-      
+    payload.pm10 = pm.pm10;
+    payload.pm25 = pm.pm25;
   } else {                    //Red LED will blink 5 times if Sensor cannot be activated.
     ledBlink(4, 6, 100);
   }
 
   sds.sleep();
   digitalWrite(4, LOW);
-  delay(1000);
-  digitalWrite(4, HIGH);
- 
-  // Every 5 seconds we print an update
-  while (millis() - start < 5000) {
-    if (gps.available() > 0) {
-      char c = gps.read();
-      // Serial.print(c);  // uncomment to see raw GPS data
-      if (tgps.encode(c)) {
-        newdata = true;
-        // break;  // uncomment to print new data immediately!
-      }
-    }
-  }
- 
-  if (newdata) {
-    tgps.get_position(&payload.lat.lat_long, &payload.lng.lng_long, &age);
-    digitalWrite(4, LOW);
-  } else {
-    ledBlink(4, 6, 100);
-  }
-
-  digitalWrite(4, LOW);
   digitalWrite(5, HIGH);
 
+  gps.listen();
+
+  // For one second we parse GPS data and report some key values
+  for (unsigned long start = millis(); millis() - start < 5000;)
+  {
+    while (gps.available())
+    {
+      char c = gps.read();
+      // Serial.write(c); // uncomment this line if you want to see the GPS data flowing
+      if (tgps.encode(c)) // Did a new valid sentence come in?
+        newData = true;
+    }
+  }
+
+  if (newData) {
+    unsigned long age;
+    tgps.f_get_position(&payload.lat, &payload.lng, &age);
+  } else {
+    ledBlink(5, 6, 100);
+  }
+  digitalWrite(5, LOW);
+  
+  delay(1000);
+  digitalWrite(5, HIGH);
+
+  network.update();                          // Check the network regularly
   RF24NetworkHeader header(other_node);
   bool ok = network.write(header,&payload,sizeof(payload));
       
   if (ok)                   //Red LED will off if data is completely transferred.
     digitalWrite(5, LOW);
   else                      //Red LED will blink 3 times if data is not transferred.
-    ledBlink(5, 4, 100);
+    ledBlink(5, 3, 100);
 
-  delay(55000);
+  delay(5000);
 }
