@@ -66,14 +66,16 @@ void loop() {
   
   payload_t payload = {-1.0, -1.0, -1000.0, -1000.0, this_node};
 
-  digitalWrite(4, HIGH);       
   sds.wakeup();
+  digitalWrite(4, HIGH); 
   delay(5000);
   
   PmResult pm = sds.queryPm();
   if (pm.isOk()) {
+    digitalWrite(4, LOW);
     payload.pm10 = pm.pm10;
     payload.pm25 = pm.pm25;
+    digitalWrite(4, HIGH); 
   } else {                    //Red LED will blink 5 times if Sensor cannot be activated.
     ledBlink(4, 6, 100);
   }
@@ -125,5 +127,5 @@ void loop() {
 
   if(!ok) ledBlink(5, 3, 500);
   
-  delay(5000);
+  delay(50000);
 }
