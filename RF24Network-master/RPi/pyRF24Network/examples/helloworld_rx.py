@@ -51,6 +51,16 @@ while 1:
         header, payload = network.read(8)
         print("payload length ", len(payload))
         ms, number = unpack('ffff<', bytes(payload))
-        print('Received payload ', number, ' at ', ms, ' from ', oct(header.from_node))
+        Payload
+        Node: 0 % o
+        PM10: % .2
+        f
+        PM2
+        .5: % .2
+        f
+        lat: % .6
+        f, lng: % .6
+        f\n
+        print('Payload ', number, ' at ', ms, ' from ', oct(header.from_node))
     time.sleep(1)
 
