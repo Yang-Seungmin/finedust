@@ -59,12 +59,12 @@ while 1:
 
         payload_group.append(payload_json)
 
-        with open('log.json', 'r') as f:
+        with open('/var/www/html/log.json', 'r') as f:
             payload_group = json.load(f)
             if len(payload_group) >= 1000:
                 del (payload_group[0])
 
-        with open('log.json', 'w+') as f:
+        with open('/var/www/html/log.json', 'w+') as f:
             json.dump(payload_group, f, indent='\t')
 
 
