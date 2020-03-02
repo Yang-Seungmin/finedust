@@ -126,5 +126,5 @@ void loop() {
 
   if(!ok) ledBlink(5, 3, 500);
   
-  delay(50000);
+  delay(5000);
 }

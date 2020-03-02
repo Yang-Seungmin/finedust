@@ -57,14 +57,16 @@ while 1:
         payload_json = {'header': oct(header.from_node), 'pm10': pm10, 'pm25': pm25, 'lat': lat, 'lng': lng}
         print('PM10: ', pm10, ', PM25: ', pm25, ', lat: ', lat, ', lng: ', lng, '  From: ', oct(header.from_node))
 
+        payload_group.append(payload_json)
+
         with open('log.json', 'r') as f:
             payload_group = json.load(f)
             if len(payload_group) >= 1000:
                 del (payload_group[0])
 
-        payload_group.append(payload_json)
-
-        with open('log.json', 'w') as f:
+        with open('log.json', 'w+') as f:
             json.dump(payload_group, f, indent='\t')
+
+
 
     time.sleep(1)
