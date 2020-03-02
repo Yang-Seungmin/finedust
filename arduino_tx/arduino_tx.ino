@@ -21,7 +21,6 @@ struct payload_t {                  // Structure of our payload
   float pm25;
   float lat;
   float lng;
-  uint16_t this_node;
 };
 
 void setup() {
@@ -64,7 +63,7 @@ void loop() {
   char retry;
   bool ok;
   
-  payload_t payload = {-1.0, -1.0, -1000.0, -1000.0, this_node};
+  payload_t payload = {-1.0, -1.0, -1000.0, -1000.0};
 
   sds.wakeup();
   digitalWrite(4, HIGH); 

@@ -50,17 +50,7 @@ while 1:
     while network.available():
         header, payload = network.read(8)
         print("payload length ", len(payload))
-        ms, number = unpack('ffff<', bytes(payload))
-        Payload
-        Node: 0 % o
-        PM10: % .2
-        f
-        PM2
-        .5: % .2
-        f
-        lat: % .6
-        f, lng: % .6
-        f\n
-        print('Payload ', number, ' at ', ms, ' from ', oct(header.from_node))
+        pm10, pm25, lat, lng = unpack('ffff', bytes(payload))
+        print('PM10: ', pm10, ', PM25: ', pm25, ', lat: ', lat, ', lng: ', lng, '  From: ', oct(header.from_node))
     time.sleep(1)
 
